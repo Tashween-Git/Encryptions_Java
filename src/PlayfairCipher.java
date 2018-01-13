@@ -2,9 +2,31 @@ import java.util.Scanner;
 
 public class PlayfairCipher
 {
-    private String KeyWord        = new String();
-    private String Key            = new String();
-    private char   matrix_arr[][] = new char[5][5];
+    private String KeyWord        = new String(); // KeyWord global variable available to all methods
+    private String Key            = new String(); // Key global variable available to all methods
+    private char   matrix_arr[][] = new char[5][5]; // a matrix(two dimensional array) of 5 x 5 available to all methods
+
+
+    public static void main(String[] args)
+    {
+        PlayfairCipher pc = new PlayfairCipher();
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter a keyword:");
+        String keyword = sc.next(); // user input the keyword
+        pc.setKey(keyword); // assigning the input keyword to the global variable
+        pc.KeyGen(); // calling the KeyGen method to generate the 5 x 5 matrix
+        System.out.println("Enter your word to be encrypted: (Make sure length of message is even)");
+        String key_input = sc.next();
+        if (key_input.length() % 2 == 0) // checking if input text is of even length
+        {
+            System.out.println("Encryption: " + pc.encryptMessage(key_input));
+        }
+        else
+        {
+            System.out.println("Message length should be even");
+        }
+        sc.close();
+    }
 
     public void setKey(String k)
     {
@@ -34,10 +56,10 @@ public class PlayfairCipher
         Key = KeyWord;
         for (int i = 0; i < 26; i++)
         {
-            current = (char) (i + 97);
-            if (current == 'j')
+            current = (char) (i + 97); // alphabet a to z
+            if (current == 'j') // ignoring the alphabet j
                 continue;
-            for (int j = 0; j < KeyWord.length(); j++)
+            for (int j = 0; j < KeyWord.length(); j++) // checking for existing alphabet in the keyword
             {
                 if (current == KeyWord.charAt(j))
                 {
@@ -46,11 +68,11 @@ public class PlayfairCipher
                 }
             }
             if (flag)
-                Key = Key + current;
+                Key = Key + current; // concatenating all the alphabets to be in the 5 x 5 matrix
             flag = true;
         }
         System.out.println(Key);
-        matrix();
+        matrix(); // calling the matrix method
     }
 
     private void matrix()
@@ -68,70 +90,6 @@ public class PlayfairCipher
         }
     }
 
-    private String format(String old_text)
-    {
-        int i = 0;
-        int len = 0;
-        String text = new String();
-        len = old_text.length();
-        for (int tmp = 0; tmp < len; tmp++)
-        {
-            if (old_text.charAt(tmp) == 'j')
-            {
-                text = text + 'i';
-            }
-            else
-                text = text + old_text.charAt(tmp);
-        }
-        len = text.length();
-        for (i = 0; i < len; i = i + 2)
-        {
-            if (text.charAt(i + 1) == text.charAt(i))
-            {
-                text = text.substring(0, i + 1) + 'x' + text.substring(i + 1);
-            }
-        }
-        return text;
-    }
-
-    private String[] Divid2Pairs(String new_string)
-    {
-        String Original = format(new_string);
-        int size = Original.length();
-        if (size % 2 != 0)
-        {
-            size++;
-            Original = Original + 'x';
-        }
-        String x[] = new String[size / 2];
-        int counter = 0;
-        for (int i = 0; i < size / 2; i++)
-        {
-            x[i] = Original.substring(counter, counter + 2);
-            counter = counter + 2;
-        }
-        return x;
-    }
-
-    public int[] GetDiminsions(char letter)
-    {
-        int[] key = new int[2];
-        if (letter == 'j')
-            letter = 'i';
-        for (int i = 0; i < 5; i++)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                if (matrix_arr[i][j] == letter)
-                {
-                    key[0] = i;
-                    key[1] = j;
-                    break;
-                }
-            }
-        }
-        return key;
-    }
 
     public String encryptMessage(String Source)
     {
@@ -181,25 +139,72 @@ public class PlayfairCipher
         return Code;
     }
 
-    public static void main(String[] args)
+    private String[] Divid2Pairs(String new_string)
     {
-        PlayfairCipher x = new PlayfairCipher();
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter a keyword:");
-        String keyword = sc.next();
-        x.setKey(keyword);
-        x.KeyGen();
-        System.out
-                .println("Enter word to encrypt: (Make sure length of message is even)");
-        String key_input = sc.next();
-        if (key_input.length() % 2 == 0)
+        String Original = format(new_string); // calling the getDim
+        int size = Original.length();
+        if (size % 2 != 0) // if size of input string in not even, add 'x' to it
         {
-            System.out.println("Encryption: " + x.encryptMessage(key_input));
+            size++;
+            Original = Original + 'x';
         }
-        else
+        String x[] = new String[size / 2];
+        int counter = 0;
+        for (int i = 0; i < size / 2; i++)
         {
-            System.out.println("Message length should be even");
+            x[i] = Original.substring(counter, counter + 2);
+            counter = counter + 2;
         }
-        sc.close();
+        return x;
     }
+
+    private String format(String old_text)
+    {
+        int i = 0;
+        int len = 0;
+        String text = new String();
+        len = old_text.length();
+        for (int tmp = 0; tmp < len; tmp++)
+        {
+            if (old_text.charAt(tmp) == 'j')
+            {
+                text = text + 'i';
+            }
+            else
+                text = text + old_text.charAt(tmp);
+        }
+        len = text.length();
+        for (i = 0; i < len; i = i + 2)
+        {
+            if (text.charAt(i + 1) == text.charAt(i))
+            {
+                text = text.substring(0, i + 1) + 'x' + text.substring(i + 1);
+            }
+        }
+        return text;
+    }
+
+    public int[] GetDiminsions(char letter)
+    {
+        int[] key = new int[2];
+        if (letter == 'j')
+            letter = 'i';
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                if (matrix_arr[i][j] == letter)
+                {
+                    key[0] = i;
+                    key[1] = j;
+                    break;
+                }
+            }
+        }
+        return key;
+    }
+
+
+
+
 }
