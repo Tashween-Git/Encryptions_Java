@@ -94,6 +94,7 @@ public class PlayfairCipher
     public String encryptMessage(String Source)
     {
         String src_arr[] = Divid2Pairs(Source);
+        System.out.println(src_arr.length);
         String Code = new String();
         char one;
         char two;
@@ -103,8 +104,13 @@ public class PlayfairCipher
         {
             one = src_arr[i].charAt(0);
             two = src_arr[i].charAt(1);
+            System.out.println(one);
+            System.out.println(two);
             part1 = GetDiminsions(one);
             part2 = GetDiminsions(two);
+
+            System.out.println(part1);
+            System.out.println(part2);
             if (part1[0] == part2[0])
             {
                 if (part1[1] < 4)
@@ -141,16 +147,19 @@ public class PlayfairCipher
 
     private String[] Divid2Pairs(String new_string)
     {
+        System.out.println(new_string);
         String Original = format(new_string); // calling the getDim
+        System.out.println(Original);
+
         int size = Original.length();
         if (size % 2 != 0) // if size of input string in not even, add 'x' to it
         {
             size++;
             Original = Original + 'x';
         }
-        String x[] = new String[size / 2];
+        String x[] = new String[size / 2]; // creating an array of half the length of the input string after formatting
         int counter = 0;
-        for (int i = 0; i < size / 2; i++)
+        for (int i = 0; i < size / 2; i++) // creating the pairs of 2 alphabets
         {
             x[i] = Original.substring(counter, counter + 2);
             counter = counter + 2;
@@ -158,6 +167,7 @@ public class PlayfairCipher
         return x;
     }
 
+    // format method to format the input string
     private String format(String old_text)
     {
         int i = 0;
@@ -166,7 +176,7 @@ public class PlayfairCipher
         len = old_text.length();
         for (int tmp = 0; tmp < len; tmp++)
         {
-            if (old_text.charAt(tmp) == 'j')
+            if (old_text.charAt(tmp) == 'j') // to replace the alphabet 'j' with 'i'
             {
                 text = text + 'i';
             }
@@ -174,16 +184,18 @@ public class PlayfairCipher
                 text = text + old_text.charAt(tmp);
         }
         len = text.length();
-        for (i = 0; i < len; i = i + 2)
+        for (i = 0; i < len; i = i + 2) // if two alphabets are the same, add 'x' between them
         {
             if (text.charAt(i + 1) == text.charAt(i))
             {
                 text = text.substring(0, i + 1) + 'x' + text.substring(i + 1);
+                System.out.println(text);
             }
         }
         return text;
     }
 
+    // method to get position of character in the 5 x 5 matrix
     public int[] GetDiminsions(char letter)
     {
         int[] key = new int[2];
