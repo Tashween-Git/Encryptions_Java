@@ -12,8 +12,8 @@ public class CeasarCipher {
         System.out.println("Enter your text to be encrypted: ");
         String text;
         text = sc.next(); //Getting input from user
-        System.out.println(encryption(text, 3)); // Encrypting the text with a shift of value 3
-        System.out.println(decryption(encryption(text, 3), 3)); // Decrypting the text with a shift of value 3
+        System.out.println("Encrypted message: " + encryption(text, 3)); // Encrypting the text with a shift of value 3
+        System.out.println("Decrypted message: " + decryption(encryption(text, 3), 3)); // Decrypting the text with a shift of value 3
         sc.close();
     }
 

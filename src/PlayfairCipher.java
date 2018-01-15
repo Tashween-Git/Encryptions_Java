@@ -16,15 +16,19 @@ public class PlayfairCipher
         pc.setKey(keyword); // assigning the input keyword to the global variable
         pc.KeyGen(); // calling the KeyGen method to generate the 5 x 5 matrix
         System.out.println("Enter your word to be encrypted: (Make sure length of message is even)");
-        String key_input = sc.next();
+        String key_input = sc.next().toLowerCase();
         if (key_input.length() % 2 == 0) // checking if input text is of even length
         {
-            System.out.println("Encryption: " + pc.encryptMessage(key_input));
+            String encryptedText = pc.encryptMessage(key_input);
+            System.out.println("Encryption: " + encryptedText);
+            System.out.println("Decryption: " + pc.decryptMessage(encryptedText));
+
         }
         else
         {
             System.out.println("Message length should be even");
         }
+
         sc.close();
     }
 
@@ -75,6 +79,7 @@ public class PlayfairCipher
         matrix(); // calling the matrix method
     }
 
+    // method to make the 5 x 5 matrix
     private void matrix()
     {
         int counter = 0;
@@ -94,7 +99,7 @@ public class PlayfairCipher
     public String encryptMessage(String Source)
     {
         String src_arr[] = Divid2Pairs(Source);
-        System.out.println(src_arr.length);
+        //System.out.println(src_arr.length);
         String Code = new String();
         char one;
         char two;
@@ -104,13 +109,13 @@ public class PlayfairCipher
         {
             one = src_arr[i].charAt(0);
             two = src_arr[i].charAt(1);
-            System.out.println(one);
-            System.out.println(two);
-            part1 = GetDiminsions(one);
-            part2 = GetDiminsions(two);
+            //System.out.println(one);
+            //System.out.println(two);
+            part1 = GetPositions(one);
+            part2 = GetPositions(two);
 
-            System.out.println(part1);
-            System.out.println(part2);
+            //System.out.println(part1);
+            //System.out.println(part2);
             if (part1[0] == part2[0])
             {
                 if (part1[1] < 4)
@@ -145,11 +150,12 @@ public class PlayfairCipher
         return Code;
     }
 
+    // method to create the pairs of 2
     private String[] Divid2Pairs(String new_string)
     {
-        System.out.println(new_string);
+        //System.out.println(new_string);
         String Original = format(new_string); // calling the getDim
-        System.out.println(Original);
+        //System.out.println(Original);
 
         int size = Original.length();
         if (size % 2 != 0) // if size of input string in not even, add 'x' to it
@@ -196,7 +202,7 @@ public class PlayfairCipher
     }
 
     // method to get position of character in the 5 x 5 matrix
-    public int[] GetDiminsions(char letter)
+    public int[] GetPositions(char letter)
     {
         int[] key = new int[2];
         if (letter == 'j')
@@ -216,7 +222,51 @@ public class PlayfairCipher
         return key;
     }
 
-
-
-
+    public String decryptMessage(String Code)
+    {
+        String Original = new String();
+        String src_arr[] = Divid2Pairs(Code);
+        char one;
+        char two;
+        int part1[] = new int[2];
+        int part2[] = new int[2];
+        for (int i = 0; i < src_arr.length; i++)
+        {
+            one = src_arr[i].charAt(0);
+            two = src_arr[i].charAt(1);
+            part1 = GetPositions(one);
+            part2 = GetPositions(two);
+            if (part1[0] == part2[0])
+            {
+                if (part1[1] > 0)
+                    part1[1]--;
+                else
+                    part1[1] = 4;
+                if (part2[1] > 0)
+                    part2[1]--;
+                else
+                    part2[1] = 4;
+            }
+            else if (part1[1] == part2[1])
+            {
+                if (part1[0] > 0)
+                    part1[0]--;
+                else
+                    part1[0] = 4;
+                if (part2[0] > 0)
+                    part2[0]--;
+                else
+                    part2[0] = 4;
+            }
+            else
+            {
+                int temp = part1[1];
+                part1[1] = part2[1];
+                part2[1] = temp;
+            }
+            Original = Original + matrix_arr[part1[0]][part1[1]]
+                    + matrix_arr[part2[0]][part2[1]];
+        }
+        return Original;
+    }
 }
